@@ -9,19 +9,14 @@ def index():
     return '<h1>Why so easy</h1>'
 
 def _get_pdfkit_config():
-    """wkhtmltopdf lives and functions differently depending on Windows or Linux. We
-    need to support both since we develop on windows but deploy on Heroku.
-
-    Returns:
-        A pdfkit configuration
-    """
-    if os.environ.get("FLASK_ENV") == "development" :
-        return pdfkit.configuration(wkhtmltopdf=os.environ.get('WKHTMLTOPDF_BINARY', '/usr/local/bin/wkhtmltopdf'))
-    else:
+    if os.getenv('FLASK_ENV') == 'production':
         WKHTMLTOPDF_CMD = subprocess.Popen(
-        ['which', os.environ.get('WKHTMLTOPDF_BINARY', 'wkhtmltopdf-pack')], # Note we default to 'wkhtmltopdf' as the binary name
-        stdout=subprocess.PIPE).communicate()[0].strip()
+            ['which', os.environ.get(
+                'WKHTMLTOPDF_BINARY', 'wkhtmltopdf-pack')],
+            stdout=subprocess.PIPE).communicate()[0].strip()
         return pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_CMD)
+    else:
+        return pdfkit.configuration()
 
 @app.route("/pdf")
 def show():
