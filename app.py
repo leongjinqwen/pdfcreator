@@ -1,5 +1,4 @@
 from flask import Flask, make_response
-import pdfkit
 
 app = Flask(__name__)
 
@@ -9,6 +8,7 @@ def index():
 
 @app.route("/pdf")
 def show():
+    import pdfkit
     pdf = pdfkit.from_url('http://google.com',False)
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
