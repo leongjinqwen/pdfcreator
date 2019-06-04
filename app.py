@@ -18,7 +18,9 @@ def _get_pdfkit_config():
     if os.environ.get("FLASK_ENV") == "development" :
         return pdfkit.configuration(wkhtmltopdf=os.environ.get('WKHTMLTOPDF_BINARY', '/usr/local/bin/wkhtmltopdf'))
     else:
-        WKHTMLTOPDF_CMD = subprocess.Popen(['which', os.environ.get('WKHTMLTOPDF_BINARY', 'wkhtmltopdf')], stdout=subprocess.PIPE).communicate()[0].strip()
+        WKHTMLTOPDF_CMD = subprocess.Popen(
+        ['which', os.environ.get('WKHTMLTOPDF_BINARY', 'wkhtmltopdf-pack')], # Note we default to 'wkhtmltopdf' as the binary name
+        stdout=subprocess.PIPE).communicate()[0].strip()
         return pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_CMD)
 
 @app.route("/pdf")
